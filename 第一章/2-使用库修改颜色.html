@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script type="module">
+  // 这种写法不能用在nodejs中，因为nodejs只能请求npm下载的本地资源，无法请求网络资源
+  // cdn引入
+  import { Color } from "https://unpkg.com/three/build/three.module.js";
+
+  const canvas = document.querySelector('#canvas')
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+  const webgl = canvas.getContext('webgl')
+  webgl.clearColor(0, 0, 0, 1);
+  // 使用之前制定的颜色，清空绘图区
+  webgl.clear(webgl.COLOR_BUFFER_BIT)
+
+  // 实例化color对象
+  const color = new Color('rgba(255, 0, 0, 1)')
+  webgl.clearColor(color.r, color.g, color.a, 1)
+  webgl.clear(webgl.COLOR_BUFFER_BIT)
+
+  !(function ani() {
+    color.offsetHSL(0.05, 0, 0)
+    // offsetHSL 色相、饱和度、亮度 偏移
+    webgl.clearColor(color.r, color.g, color.a, 1)
+    webgl.clear(webgl.COLOR_BUFFER_BIT)
+    requestAnimationFrame(ani)
+  })()
+</script>
+</html>

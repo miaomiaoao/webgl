@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <canvas id="canvas"></canvas>
+</body>
+<script id="vertexShader" type="x-shader/x-vertex">
+  void main() {
+    gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
+    gl_PointSize = 100.0;
+  }
+</script>
+<script id="fragmentShader" type="x-shader/x-fragment">
+  void main() {
+    gl_FragColor = vec4(1.0, 1.0, 0.0, 1.0);
+  }
+</script>
+<script>
+  (function() {
+    const canvas = document.getElementById('canvas')
+
+    canvas.height = window.innerHeight
+    canvas.width = window.innerWidth
+
+    const gl = canvas.getContext('webgl')
+
+
+
+    // 在js中获取顶点着色器和片源着色器的文本
+    const vsSource = document.getElementById('vertexShader').innerText
+    const fsSource = document.getElementById('fragmentShader').innerText
+    
+    initShaders(gl, vsSource, fsSource)
+
+    gl.clearColor(0, 0, 244, 1)
+    gl.clear(gl.COLOR_BUFFER_BIT)
+    gl.drawArrays(gl.POINTS, 0, 1)
+    // 在js中获取定点着色器和片源着色器 
+  })()
+  
+  function initShaders(gl, vsSource, fsSource) {
+      // 创建程序对象
+      const program = gl.createProgram()
+      // 建立着色对象
+      const vertextShader = loadShader(gl, gl.VERTEX_SHADER, vsSource)
+      const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource)
+      
+      // 将定点着色器装进程序对象
+      gl.attachShader(program, vertextShader)
+      gl.attachShader(program, fragmentShader)
+
+      gl.linkProgram(program)
+      gl.useProgram(program)
+      gl.program = program
+      return true
+    }
+
+    function loadShader(gl, type, source) {
+      // 根据着色器类型,建立着色器对象
+      const shader = gl.createShader(type)
+      // 将着色器源文件传入着色器对象中
+      gl.shaderSource(shader, source)
+      // 编译着色器对象
+      gl.compileShader(shader)
+      return shader
+    }
+</script>
+</html>
